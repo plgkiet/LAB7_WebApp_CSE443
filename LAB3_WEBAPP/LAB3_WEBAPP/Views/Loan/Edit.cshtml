@@ -1,0 +1,67 @@
+@model LAB3_WEBAPP.Models.Loan
+
+@{
+    Layout = "AdminLayout";
+    ViewBag.Title = "Edit Loan";
+}
+
+<h2 class="mb-4">Edit Loan</h2>
+
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="LoanId" />
+
+    <div class="mb-3">
+        <label asp-for="UserId" class="form-label">User</label>
+        <select asp-for="UserId" asp-items="ViewBag.Users" class="form-control">
+            <option value="">-- Select User --</option>
+        </select>
+        <span asp-validation-for="UserId" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="BookId" class="form-label">Book</label>
+        <select asp-for="BookId" asp-items="ViewBag.Books" class="form-control">
+            <option value="">-- Select Book --</option>
+        </select>
+        <span asp-validation-for="BookId" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="LoanDate" class="form-label">Loan Date</label>
+        <input asp-for="LoanDate" class="form-control" type="date" />
+        <span asp-validation-for="LoanDate" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="DueDate" class="form-label">Due Date</label>
+        <input asp-for="DueDate" class="form-control" type="date" />
+        <span asp-validation-for="DueDate" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="ReturnDate" class="form-label">Return Date</label>
+        <input asp-for="ReturnDate" class="form-control" type="date" />
+        <span asp-validation-for="ReturnDate" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Status" class="form-label">Status</label>
+        <select asp-for="Status" class="form-select">
+            <option value="">-- Select Status --</option>
+            <option value="0">Pending</option>
+            <option value="1">Returned</option>
+            <option value="2">Late</option>
+        </select>
+        <span asp-validation-for="Status" class="text-danger"></span>
+    </div>
+
+
+
+
+    <button type="submit" class="btn btn-success">Save Changes</button>
+    <a asp-action="Index" class="btn btn-secondary ms-2">Cancel</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

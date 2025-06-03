@@ -1,0 +1,54 @@
+@model LAB3_WEBAPP.Models.Book.Book
+@{
+    Layout = "AdminLayout";
+    ViewBag.Title = "Add new book";
+}
+
+@foreach (var modelError in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+{
+    <div style="color:red">@modelError.ErrorMessage</div>
+}
+
+
+<h2 class="mb-4">Add New Book</h2>
+
+<form asp-action="Create" method="post">
+    <div class="mb-3">
+        <label asp-for="Title" class="form-label"></label>
+        <input asp-for="Title" class="form-control"/>
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="CoverImage" class="control-label"></label>
+        <input asp-for="CoverImage" class="form-control" placeholder="Input file name of image" />
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="CategoryId" class="control-label"></label>
+        <select asp-for="CategoryId" asp-items="ViewBag.Categories" class="form-control">
+            <option value="">-- Select Category --</option>
+        </select>
+        <span asp-validation-for="CategoryId" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="AuthorId" class="control-label"></label>
+        <select asp-for="AuthorId" asp-items="ViewBag.Authors" class="form-control">
+            <option value="">-- Select Author --</option>
+        </select>
+        <span asp-validation-for="AuthorId" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="Pdf" class="control-label"></label>
+        <input asp-for="Pdf" class="form-control"/>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Add</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,61 @@
+@model IEnumerable<LAB3_WEBAPP.Models.Book.Book>
+@{
+    Layout = "AdminLayout";
+}
+
+<h2 class="mb-4">Books List</h2>
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+
+<table class="table table-bordered table-hover">
+    <thead class="table-light">
+    <tr>
+        <th>#</th>
+        <th>Title</th>
+        <th>Cover Image</th>
+        <th>Created Date</th>
+        <th>Category</th>
+        <th>Author</th>
+        <th>Pdf</th>
+    </tr>
+    </thead>
+    <tbody>
+    @if (Model != null && Model.Any())
+    {
+        int index = 1;
+        foreach (var item in Model)
+        {
+            <tr>
+                <td>@index</td>
+                <td>@item.Title</td>
+                <td>@item.CoverImage</td>
+                <td>@item.CreatedDate.ToString("dd/MM/yyyy")</td>
+                <td>@item.Category.Name</td>
+                <td>@item.Author.FullName</td>
+                <td>@item.Pdf</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.BookId" class="btn btn-sm btn-warning me-1">Edit</a>
+                    <a asp-action="Delete" asp-route-id="@item.BookId" class="btn btn-sm btn-danger">Delete</a>
+                </td>
+            </tr>
+            index++;
+        }
+    }
+    else
+    {
+        <tr>
+            <td colspan="8" class="text-center text-muted">No book is found</td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+<a asp-action="Create" class="btn btn-success mt-3">
+    <i class="bi bi-plus-circle"></i> Add New
+</a>

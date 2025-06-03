@@ -1,0 +1,84 @@
+@model IEnumerable<LAB3_WEBAPP.Models.User>
+
+@{
+    Layout = "AdminLayout";
+    ViewBag.Title = "Users List";
+}
+
+<h2 class="mb-4">Users List</h2>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<table class="table table-bordered table-hover">
+    <thead class="table-light">
+    <tr>
+        <th>#</th>
+        <th>Fullname</th>
+        <th>Username</th>
+        <th>Email</th>
+        <th>Phone</th>
+        <th>Address</th>
+        <th>Created Date</th>
+        <th>Status</th>
+        <th>Avatar</th>
+        <th>Role</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    @if (Model != null && Model.Any())
+    {
+        int index = 1;
+        foreach (var user in Model)
+        {
+            <tr>
+                <td>@index</td>
+                <td>@user.Fullname</td>
+                <td>@user.Username</td>
+                <td>@user.Email</td>
+                <td>@user.Phone</td>
+                <td>@user.Address</td>
+                <td>@user.CreatedDate.ToString("dd/MM/yyyy")</td>
+                <td>
+                    @if (user.IsActive)
+                    {
+                        <span class="badge bg-success">Active</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary">Inactive</span>
+                    }
+                </td>
+                <td>@user.Avatar</td>
+                <td>
+                    @foreach (var userRole in user.UserRoles)
+                    {
+                        <span class="badge bg-info me-1">@userRole.Role.Name</span>
+                    }
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@user.UserId" class="btn btn-sm btn-warning me-1">Edit</a>
+                    <a asp-action="Delete" asp-route-id="@user.UserId" class="btn btn-sm btn-danger">Delete</a>
+                </td>
+            </tr>
+            index++;
+        }
+    }
+    else
+    {
+        <tr>
+            <td colspan="9" class="text-center text-muted">No user is found</td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+<a asp-action="Create" class="btn btn-success mt-3">
+    <i class="bi bi-plus-circle"></i> Add New User
+</a>

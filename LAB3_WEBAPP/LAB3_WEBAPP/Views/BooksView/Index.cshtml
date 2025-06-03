@@ -1,0 +1,381 @@
+@{
+    Layout = "AdminLayout";
+}
+
+<h2 class="page-title">📚 Book Manager</h2>
+
+<div class="btn-group">
+    <button id="btnLoad" class="btn btn-primary">🔄 Load Books</button>
+</div>
+
+<table id="booksTable" class="books-table">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Title</th>
+        <th>Author</th>
+        <th>Category</th>
+        <th>Cover</th>
+        <th>PDF</th>
+        <th style="width: 150px;">Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr><td colspan="4" style="text-align:center;">Loading books...</td></tr>
+    </tbody>
+</table>
+
+<div class="add-book-section">
+    <h4>➕ Add New Book</h4>
+    <div class="add-book-form">
+        <div class="form-group">
+            <label for="bookTitle">Title</label>
+            <input type="text" id="bookTitle" placeholder="Enter book title" />
+        </div>
+
+        <div class="form-group">
+            <label for="authorSelect">Author</label>
+            <select id="authorSelect"></select>
+        </div>
+
+        <div class="form-group">
+            <label for="categorySelect">Category</label>
+            <select id="categorySelect"></select>
+        </div>
+
+        <div class="form-group" style="align-self: end;">
+            <button id="btnSubmitAdd" class="btn btn-success">Add Book</button>
+        </div>
+    </div>
+</div>
+
+
+<div id="message" class="message"></div>
+
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(function(){
+
+            function showMessage(text, isError = false) {
+                var msgDiv = $("#message");
+                msgDiv.text(text);
+                msgDiv.css({
+                    color: isError ? "#dc3545" : "#28a745",
+                    opacity: 1
+                });
+                setTimeout(() => {
+                    msgDiv.css("opacity", 0);
+                }, 3000);
+            }
+
+            function loadDropdowns() {
+                $.get("/api/Authors", function(authors){
+                    let opts = authors.map(a => `<option value="${a.authorId}">${a.fullName}</option>`);
+                    $("#authorSelect").html(opts);
+                });
+
+                $.get("/api/Categories", function(categories){
+                    let opts = categories.map(c => `<option value="${c.categoryId}">${c.name}</option>`);
+                    $("#categorySelect").html(opts);
+                });
+            }
+
+            function loadBooks() {
+                $("#booksTable tbody").html("<tr><td colspan='5' style='text-align:center;'>Loading books...</td></tr>");
+                $.ajax({
+                    url: "/api/Books",
+                    type: "GET",
+                    success: function(data){
+                        if (data.length === 0) {
+                            $("#booksTable tbody").html("<tr><td colspan='5' style='text-align:center;'>No books found.</td></tr>");
+                            return;
+                        }
+                        var rows = "";
+                        data.forEach(function(book){
+                            rows += "<tr>" +
+                                "<td>" + book.bookId + "</td>" +
+                                "<td>" + book.title + "</td>" +
+                                "<td>" + (book.author?.fullName || '') + "</td>" +
+                                "<td>" + (book.category?.name || '') + "</td>" +
+                                "<td>" + (book.coverImage || '') + "</td>" +
+                                "<td>" + (book.pdf || '') + "</td>" +
+                                "<td>" +
+                                "<button class='btnEdit' data-id='" + book.bookId + "'>✏️ Edit</button>" +
+                                "<button class='btnDelete' data-id='" + book.bookId + "'>🗑 Delete</button>" +
+                                "</td>" +
+                                "</tr>";
+                        });
+                        $("#booksTable tbody").html(rows);
+                    },
+                    error: function(){
+                        $("#booksTable tbody").html("<tr><td colspan='5' style='text-align:center; color:red;'>Error loading books.</td></tr>");
+                        showMessage("Error loading books", true);
+                    }
+                });
+            }
+
+            $("#btnLoad").click(loadBooks);
+
+            $("#btnSubmitAdd").click(function(){
+                var newBook = {
+                    title: $("#bookTitle").val().trim(),
+                    authorId: parseInt($("#authorSelect").val()),
+                    categoryId: parseInt($("#categorySelect").val())
+                };
+
+                if (!newBook.title) {
+                    showMessage("Title is required", true);
+                    return;
+                }
+
+                $.ajax({
+                    url: "/api/Books",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(newBook),
+                    success: function(){
+                        showMessage("Added Successfully");
+                        loadBooks();
+                    },
+                    error: function(xhr){
+                        const err = xhr.responseJSON?.errors || xhr.responseText;
+                        showMessage("Error: " + JSON.stringify(err), true);
+                    }
+                });
+            });
+
+            $("#booksTable").on("click", ".btnDelete", function(){
+                var id = $(this).data("id");
+                if (confirm("Bạn có chắc muốn xóa sách này không?")) {
+                    $.ajax({
+                        url: "/api/Books/" + id,
+                        type: "DELETE",
+                        success: function(){
+                            showMessage("Deleted Successfully");
+                            loadBooks();
+                        },
+                        error: function(xhr){
+                            showMessage("Error: " + xhr.responseText, true);
+                        }
+                    });
+                }
+            });
+
+            $("#booksTable").on("click", ".btnEdit", function () {
+                var id = $(this).data("id");
+
+                var row = $(this).closest("tr");
+                var currentTitle = row.find("td:nth-child(2)").text().trim();
+                var currentAuthor = row.find("td:nth-child(3)").text().trim();
+                var currentCategory = row.find("td:nth-child(4)").text().trim();
+                var currentCover = row.find("td:nth-child(5)").text().trim();
+                var currentPdf = row.find("td:nth-child(6)").text().trim();
+
+                var newTitle = prompt("Nhập tiêu đề mới:", currentTitle);
+                if (newTitle === null || newTitle.trim() === "") {
+                    alert("Tiêu đề không hợp lệ!");
+                    return;
+                }
+
+                var authors = $("#authorSelect option").map(function () {
+                    return { id: $(this).val(), name: $(this).text() };
+                }).get();
+
+                var authorOptions = authors.map(a => `${a.id}: ${a.name}`).join("\n");
+                var newAuthorId = prompt(`Chọn ID Tác giả mới:\n${authorOptions}`, authors.find(a => a.name === currentAuthor)?.id || authors[0].id);
+                if (!newAuthorId || isNaN(newAuthorId)) {
+                    alert("Tác giả không hợp lệ!");
+                    return;
+                }
+
+                var categories = $("#categorySelect option").map(function () {
+                    return { id: $(this).val(), name: $(this).text() };
+                }).get();
+
+                var categoryOptions = categories.map(c => `${c.id}: ${c.name}`).join("\n");
+                var newCategoryId = prompt(`Chọn ID Thể loại mới:\n${categoryOptions}`, categories.find(c => c.name === currentCategory)?.id || categories[0].id);
+                if (!newCategoryId || isNaN(newCategoryId)) {
+                    alert("Thể loại không hợp lệ!");
+                    return;
+                }
+                var newCoverImage = prompt("Nhập URL ảnh bìa mới:", currentCover);
+                var newPdf = prompt("Nhập URL file PDF mới:", currentPdf);
+                $.ajax({
+                    url: "/api/Books/" + id,
+                    type: "PUT",
+                    contentType: "application/json",
+                    data: JSON.stringify({
+                        bookId: id,
+                        title: newTitle.trim(),
+                        authorId: parseInt(newAuthorId),
+                        categoryId: parseInt(newCategoryId),
+                        coverImage: newCoverImage?.trim() || "",
+                        pdf: newPdf?.trim() || ""
+                    }),
+                    success: function () {
+                        showMessage("Updated Successfully");
+                        loadBooks();
+                    },
+                    error: function (xhr) {
+                        const err = xhr.responseJSON?.errors || xhr.responseText;
+                        showMessage("Error updating: " + JSON.stringify(err), true);
+                    }
+                });
+            });
+
+            loadBooks();
+            loadDropdowns();
+
+        });
+    </script>
+}
+
+
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .page-title {
+        text-align: center;
+        margin-bottom: 20px;
+        color: #333;
+        font-weight: 700;
+    }
+
+    .btn-group {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .btn {
+        padding: 10px 18px;
+        font-weight: 600;
+        cursor: pointer;
+        border: none;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
+        user-select: none;
+        margin: 0 5px;
+        font-size: 16px;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        color: white;
+    }
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+
+    .btn-success {
+        background-color: #28a745;
+        color: white;
+    }
+    .btn-success:hover {
+        background-color: #1e7e34;
+    }
+
+    .books-table {
+        width: 100%;
+        border-collapse: collapse;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .books-table th, .books-table td {
+        padding: 12px 15px;
+        border: 1px solid #ddd;
+        text-align: left;
+    }
+
+    .books-table thead {
+        background-color: #007bff;
+        color: white;
+    }
+
+    .books-table tbody tr:hover {
+        background-color: #f1f7ff;
+    }
+
+    .btnEdit, .btnDelete {
+        padding: 6px 12px;
+        font-size: 14px;
+        border-radius: 4px;
+        border: none;
+        cursor: pointer;
+        user-select: none;
+        transition: background-color 0.3s ease;
+        margin-right: 5px;
+    }
+
+    .btnEdit {
+        background-color: #ffc107;
+        color: #212529;
+    }
+    .btnEdit:hover {
+        background-color: #e0a800;
+    }
+
+    .btnDelete {
+        background-color: #dc3545;
+        color: white;
+    }
+    .btnDelete:hover {
+        background-color: #bd2130;
+    }
+
+    .message {
+        text-align: center;
+        margin-top: 15px;
+        font-weight: 600;
+        opacity: 0;
+        transition: opacity 0.5s;
+        min-height: 24px;
+    }
+
+    .add-book-section {
+        max-width: 900px;
+        margin: 40px auto;
+        background-color: #f8f9fa;
+        padding: 25px 30px;
+        border-radius: 12px;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    }
+
+    .add-book-section h4 {
+        margin-bottom: 20px;
+        font-size: 20px;
+        color: #333;
+        font-weight: 700;
+    }
+
+    .add-book-form {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+
+    .form-group {
+        flex: 1 1 200px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-group label {
+        font-weight: 600;
+        margin-bottom: 6px;
+        color: #333;
+    }
+
+    .form-group input,
+    .form-group select {
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        font-size: 15px;
+    }
+
+</style>
+

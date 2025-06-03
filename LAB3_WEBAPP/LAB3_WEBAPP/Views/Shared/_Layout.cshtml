@@ -1,0 +1,71 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Thư viện số</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+</head>
+<body>
+
+<header class="bg-light border-bottom mb-3">
+    <div class="container-fluid d-flex justify-content-between align-items-center p-3">
+        <img src="~/images/logo.png" alt="Logo" style="height: 50px;" />
+        <input type="text" class="form-control w-25" placeholder="Tìm kiếm..." />
+        <div>
+            @if (User.Identity.IsAuthenticated)
+            {
+                <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
+                    <button type="submit" class="btn btn-danger">Logout</button>
+                </form>
+            }
+            else
+            {
+                <a href="@Url.Action("Login", "Account")" class="btn btn-success me-2">Đăng nhập</a>
+                <a href="@Url.Action("Register", "Account")" class="btn btn-outline-primary">Đăng ký</a>
+            }
+        </div>
+    </div>
+    <nav style="background-color: #5D8044;">
+        <ul class="nav justify-content-center py-2">
+            @* <li class="nav-item mt-1"> *@
+            @*     <select class="form-select form-select-sm ms-3 text-white" style="width: 160px; background-color: #5D8044; border: none;"> *@
+            @*         <option selected>Danh mục sách</option> *@
+            @*         <option value="vanhoc">Văn học</option> *@
+            @*         <option value="khoahoc">Khoa học</option> *@
+            @*         <option value="thieunhi">Thiếu nhi</option> *@
+            @*         <option value="ngoaingu">Ngoại ngữ</option> *@
+            @*     </select> *@
+            @* </li> *@
+            <li class="nav-item"><a class="nav-link text-white" href="/">Homepage</a></li>
+            @if (User.IsInRole("Admin"))
+            {
+            <li class="nav-item">
+                <a class="nav-link text-white" asp-area="" asp-controller="Admin" asp-action="Index">Admin</a>
+            </li>
+            }
+            @* <li class="nav-item"><a class="nav-link text-white" href="/Admin/Index">Admin</a></li> *@
+            <li class="nav-item"><a class="nav-link text-white" href="/Book/SelfHelpBooks">Self-help</a></li>
+            <li class="nav-item"><a class="nav-link text-white" href="/Book/LiteratureBooks">Literature</a></li>
+            <li class="nav-item"><a class="nav-link text-white" href="/Book/TravelBooks">Travel</a></li>
+            @* <li class="nav-item"><a class="nav-link text-white" href="#">Tài liệu số</a></li> *@
+            @* <li class="nav-item"><a class="nav-link text-white" href="#">Hóa đơn điện tử</a></li> *@
+            @* <li class="nav-item"><a class="nav-link text-white" href="#">Sách</a></li> *@
+            @* <li class="nav-item"><a class="nav-link text-white" href="#">Giới thiệu</a></li> *@
+            @* <li class="nav-item"><a class="nav-link text-white" href="#">Liên hệ</a></li> *@
+        </ul>
+    </nav>
+</header>
+
+
+<main class="container">
+    @RenderBody()
+</main>
+
+<footer class="bg-dark text-white text-center py-4">
+    <p>Phạm Lê Gia Kiệt - CSE443 &copy; @DateTime.Now.Year</p>
+</footer>
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

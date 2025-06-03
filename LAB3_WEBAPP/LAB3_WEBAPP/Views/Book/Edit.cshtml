@@ -1,0 +1,58 @@
+@model LAB3_WEBAPP.Models.Book.Book
+@{
+    Layout = "AdminLayout";
+    ViewBag.Title = "Book Edit";
+}
+
+<h2 class="mb-4">Edit</h2>
+
+<form asp-action="Edit" method="post" enctype="multipart/form-data">
+    <input type="hidden" asp-for="BookId" />
+
+    <div class="mb-3">
+        <label asp-for="Title" class="form-label"></label>
+        <input asp-for="Title" class="form-control" />
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="CoverImage" class="form-label"></label>
+        <input asp-for="CoverImage" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="CoverImage" class="form-label"></label>
+        <input asp-for="CoverImage" class="form-control" />
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="CategoryId" class="control-label"></label>
+        <select asp-for="CategoryId" asp-items="ViewBag.Categories" class="form-control">
+            <option value="">-- Select Category --</option>
+        </select>
+        <span asp-validation-for="CategoryId" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="AuthorId" class="control-label"></label>
+        <select asp-for="AuthorId" asp-items="ViewBag.Authors" class="form-control">
+            <option value="">-- Select Author --</option>
+        </select>
+        <span asp-validation-for="AuthorId" class="text-danger"></span>
+    </div>
+
+
+    <div class="form-group mb-3">
+        <label asp-for="Pdf" class="control-label"></label>
+        <input asp-for="Pdf" class="form-control" placeholder="Filling file path (VD: images/author1.jpg)" />
+    </div>
+
+    <button type="submit" class="btn btn-success">Save Changes</button>
+    <a asp-action="Index" class="btn btn-danger">Cancel</a>
+    <a asp-action="Index" class="btn btn-secondary">Back</a>
+
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

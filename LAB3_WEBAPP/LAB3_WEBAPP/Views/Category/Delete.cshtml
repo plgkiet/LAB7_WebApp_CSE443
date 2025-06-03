@@ -1,0 +1,18 @@
+@model LAB3_WEBAPP.Models.Category
+
+@{
+    Layout = "AdminLayout";
+}
+
+<h2>Confirm deletion</h2>
+
+<div>
+    <h4>@Model.Name</h4>
+    <p>Are you sure to delete it?</p>
+</div>
+
+<form asp-action="Delete" method="post">
+    <input type="hidden" asp-for="CategoryId" />
+    <button type="submit" class="btn btn-danger">Delete</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>

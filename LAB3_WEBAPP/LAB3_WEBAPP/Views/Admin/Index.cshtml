@@ -1,0 +1,16 @@
+@model LAB3_WEBAPP.Models.DashboardViewModel
+
+@{
+    Layout = "AdminLayout";
+}
+
+<h2 class="mb-4">Dashboard</h2>
+<p>Chào mừng bạn đến với trang quản trị!</p>
+<ul>
+    <li>Tổng số carousel: @Model.CarouselsCount</li>
+    <li>Tổng số categories: @Model.CategoriesCount</li>
+    <li>Tổng số authors: @Model.AuthorsCount</li>
+    <li>Tổng số books: @Model.BooksCount</li>
+    <li>Tổng số users: @Model.UsersCount</li>
+    <li>Tổng số loans: @Model.LoansCount</li>
+</ul>

@@ -1,0 +1,45 @@
+@model LAB3_WEBAPP.Models.Author
+@{
+    Layout = "AdminLayout";
+    ViewBag.Title = "Add new author";
+}
+
+@foreach (var modelError in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+{
+    <div style="color:red">@modelError.ErrorMessage</div>
+}
+
+
+<h2 class="mb-4">Add New Item</h2>
+
+<form asp-action="Create" method="post" enctype="multipart/form-data">
+    <div class="mb-3">
+        <label asp-for="FirstName" class="form-label"></label>
+        <input asp-for="FirstName" class="form-control"/>
+        <span asp-validation-for="FirstName" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="LastName" class="form-label"></label>
+        <input asp-for="LastName" class="form-control"/>
+        <span asp-validation-for="LastName" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="Avatar" class="control-label"></label>
+        <input asp-for="Avatar" class="form-control" placeholder="Filling file path (VD: images/author1.jpg)" />
+    </div>
+
+    <div class="form-check mb-3">
+        <input asp-for="IsActive" class="form-check-input"/>
+        <label asp-for="IsActive" class="form-check-label"></label>
+    </div>
+
+
+    <button type="submit" class="btn btn-primary">Add</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

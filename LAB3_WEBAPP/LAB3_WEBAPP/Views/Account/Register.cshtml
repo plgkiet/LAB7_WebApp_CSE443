@@ -1,0 +1,39 @@
+@{
+    Layout = "AccountLayout";
+}
+
+<div class="container d-flex justify-content-center" style="max-height: 100vh">
+    <div class="card shadow-lg" style="width: 400px; padding: 20px;">
+        <div class="card-body">
+            <h3 class="card-title text-center mb-4" style="font-weight: bold">Đăng Ký</h3>
+            <form method="post" action="/Account/Register">
+                <div class="form-group mb-3">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" class="form-control" placeholder="Email" required />
+                </div>
+                <div class="form-group mb-3">
+                    <label for="username">Tên đăng nhập</label>
+                    <input type="text" id="username" name="username" class="form-control" placeholder="Tên đăng nhập" required />
+                </div>
+                <div class="form-group mb-3">
+                    <label for="password">Mật khẩu</label>
+                    <input type="password" id="password" name="password" class="form-control" placeholder="Nhập mật khẩu" required />
+                </div>
+                <div class="form-group mb-3">
+                    <label for="confirmPassword">Xác nhận mật khẩu</label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" class="form-control" placeholder="Xác nhận mật khẩu" required />
+                </div>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div>
+                        <input type="checkbox" id="rememberLaw" name="rememberLaw" />
+                        <label for="rememberLaw" class="form-check-label">Ghi nhớ quy định</label>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Đăng Ký</button>
+            </form>
+            <div class="text-center mt-3">
+                <span>Đã có tài khoản? <a href="/Account/Login">Đăng nhập ngay</a></span>
+            </div>
+        </div>
+    </div>
+</div>

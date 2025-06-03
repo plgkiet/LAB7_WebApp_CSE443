@@ -1,0 +1,18 @@
+@model LAB3_WEBAPP.Models.Book.Book
+
+@{
+    Layout = "AdminLayout";
+}
+
+<h2>Confirm deletion</h2>
+
+<div>
+    <h4>@Model.Title</h4>
+    <p>Are you sure to delete this book?</p>
+</div>
+
+<form asp-action="Delete" method="post">
+    <input type="hidden" asp-for="BookId" />
+    <button type="submit" class="btn btn-danger">Delete</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>

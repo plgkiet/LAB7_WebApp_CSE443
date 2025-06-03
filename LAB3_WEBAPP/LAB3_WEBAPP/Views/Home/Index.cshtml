@@ -1,0 +1,45 @@
+﻿@model LAB3_WEBAPP.Models.ViewModels.HomeIndexViewModel
+
+
+<div class="container mb-4">
+    <div id="carouselExample" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000">
+        <div class="carousel-inner rounded">
+            @for (int i = 0; i < Model.Carousels.Count; i++)
+            {
+                var carousel = Model.Carousels[i];
+                <div class="carousel-item @(i == 0 ? "active" : "")">
+                    @* <p>@carousel.ImageURL</p> *@
+                    <img src="~/images/@carousel.ImageURL" class="d-block w-100" alt="Carousel Image">
+                </div>
+            }
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+</div>
+
+
+<h2 class="mb-4">Tài liệu số sách tham khảo</h2>
+
+<div class="row">
+    @foreach (var book in Model.Books)
+    {
+        <div class="col-md-3">
+            <div class="card mb-4">
+                <a href="/Book/Details/@book.BookId">
+                    <img src="~/images/book/@book.CoverImage" class="card-img-top" alt="@book.Title">
+                </a>                
+                <div class="card-body">
+                    <h5 class="card-title">@book.Title</h5>
+                    <p class="card-text">@book.Author.FullName</p>
+                </div>
+            </div>
+        </div>
+    }
+</div>

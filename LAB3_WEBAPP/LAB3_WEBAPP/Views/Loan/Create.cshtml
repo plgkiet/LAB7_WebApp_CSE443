@@ -1,0 +1,48 @@
+@model LAB3_WEBAPP.Models.Loan
+@{
+    Layout = "AdminLayout";
+    ViewBag.Title = "Add new loan";
+}
+
+@foreach (var modelError in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+{
+    <div style="color:red">@modelError.ErrorMessage</div>
+}
+
+<h2 class="mb-4">Add New Loan</h2>
+
+<form asp-action="Create" method="post">
+    <div class="mb-3">
+        <label asp-for="UserId" class="form-label">User</label>
+        <select asp-for="UserId" asp-items="ViewBag.Users" class="form-control">
+            <option value="">-- Select User --</option>
+        </select>
+        <span asp-validation-for="UserId" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="BookId" class="form-label">Book</label>
+        <select asp-for="BookId" asp-items="ViewBag.Books" class="form-control">
+            <option value="">-- Select Book --</option>
+        </select>
+        <span asp-validation-for="BookId" class="text-danger"></span>
+    </div>
+
+    
+    <div class="mb-3">
+        <label asp-for="Status" class="form-label">Status</label>
+        <select asp-for="Status" class="form-control">
+            <option value="0">Pending</option>
+            <option value="1">Returned</option>
+            <option value="2">Overdue</option>
+        </select>
+        <span asp-validation-for="Status" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Add</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

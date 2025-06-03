@@ -1,0 +1,26 @@
+@model IEnumerable<LAB3_WEBAPP.Models.Book.Book>
+@{
+    Layout = "_Layout";
+}
+
+<h2 class="mb-4">Travel Books</h2>
+
+<div class="row">
+    @foreach (var book in Model)
+    {
+        <div class="col-md-3">
+            <div class="card mb-4">
+                <a href="/Book/Details/@book.BookId">
+                    <img src="~/images/book/@book.CoverImage" class="card-img-top" alt="@book.Title">
+                </a>
+                <div class="card-body text-center">
+                    <h5 class="card-title">@book.Title</h5>
+                    <p class="card-text text-warning">@book.Author.FullName</p>
+                </div>
+                <div class="card-footer bg-white border-0 text-center">
+                    <a asp-controller="Book" asp-action="Details" asp-route-id="@book.BookId" class="btn btn-success btn-sm">Xem chi tiết</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>

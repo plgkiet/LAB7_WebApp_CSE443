@@ -1,0 +1,20 @@
+@{
+    Layout = "_Layout";
+    var pdfPath = ViewBag.PdfPath as string;
+    var title = ViewBag.Title as string;
+}
+
+<h2 class="text-center mb-4">Đọc sách: @title</h2>
+
+@if (!string.IsNullOrEmpty(pdfPath))
+{
+    <div class="d-flex justify-content-center">
+        <iframe src="@pdfPath" width="100%" height="800px" style="border: none;"></iframe>
+    </div>
+}
+else
+{
+    <div class="alert alert-danger text-center">
+        Không thể hiển thị PDF.
+    </div>
+}
